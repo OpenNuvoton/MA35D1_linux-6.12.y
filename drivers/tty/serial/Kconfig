@@ -1551,6 +1551,21 @@ config SERIAL_SUNPLUS_CONSOLE
 	  you can alter that using a kernel command line option such as
 	  "console=ttySUPx".
 
+config SERIAL_MA35D1
+	bool "MA35D1 serial support"
+	depends on ARCH_MA35D1
+	select SERIAL_CORE
+	help
+	  This selects MA35D1 serial driver.
+
+config SERIAL_MA35D1_CONSOLE
+	bool "Console on MA35D1 serial port"
+	depends on SERIAL_MA35D1
+	select SERIAL_CORE_CONSOLE
+	help
+	  If you say Y here, it will be possible to use a serial port as the
+	  system console.
+
 config SERIAL_NUVOTON_MA35D1
 	tristate "Nuvoton MA35D1 family UART support"
 	depends on ARCH_MA35 || COMPILE_TEST

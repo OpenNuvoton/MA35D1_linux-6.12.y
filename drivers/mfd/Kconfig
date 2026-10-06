@@ -1705,6 +1705,14 @@ config MFD_TI_LP87565
 	  This driver can also be built as a module. If so, the module
 	  will be called lp87565.
 
+config MFD_MA35D1
+	bool "MA35D1 SYSCTL Driver"
+	default ARCH_MA35D1 && OF
+	select MFD_SYSCON
+	help
+	  Select this to get support for MA35D1 SYSCTL driver. This driver
+	  provides function to lock unlock protect registers.
+
 config MFD_TPS65218
 	tristate "TI TPS65218 Power Management chips"
 	depends on I2C && OF

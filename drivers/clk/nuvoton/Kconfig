@@ -3,7 +3,7 @@
 
 config COMMON_CLK_NUVOTON
 	bool "Nuvoton clock controller common support"
-	depends on ARCH_MA35 || COMPILE_TEST
+	depends on ARCH_MA35
 	default y
 	help
 	  Say y here to enable common clock controller for Nuvoton platforms.
@@ -15,5 +15,17 @@ config CLK_MA35D1
 	default y
 	help
 	  Build the clock controller driver for MA35D1 SoC.
+
+config CLK_MA35D0
+	bool "Nuvoton MA35D0 clock controller support"
+	default y
+	help
+	  Build the clock controller driver for MA35D0 SoC.
+
+config CLK_MA35H0
+	bool "Nuvoton MA35H0 clock controller support"
+	default y
+	help
+	  Build the clock controller driver for MA35H0 SoC.
 
 endif

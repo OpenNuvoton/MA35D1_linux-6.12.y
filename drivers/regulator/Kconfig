@@ -1720,4 +1720,11 @@ config REGULATOR_QCOM_LABIBB
 	  boost regulator and IBB can be used as a negative boost regulator
 	  for LCD display panel.
 
+config REGULATOR_MA35D1
+	tristate "Nuvoton MA35D1 regulators"
+	depends on ARCH_MA35D1
+	help
+	This driver provides support for voltage regulators available
+	on the Nuvoton MA35D1 platform.
+
 endif

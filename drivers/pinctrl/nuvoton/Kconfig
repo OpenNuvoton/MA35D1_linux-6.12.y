@@ -46,6 +46,23 @@ config PINCTRL_NPCM8XX
 	  the Nuvoton NPCM8XX SoC. This is strongly recommended when
 	  building a kernel that will run on this chip.
 
+config PINCTRL_NUVOTON
+        bool
+        select GENERIC_PINCTRL_GROUPS
+        select GENERIC_PINMUX_FUNCTIONS
+        select GENERIC_PINCONF
+        select GPIOLIB
+        select GPIO_GENERIC
+        select GPIOLIB_IRQCHIP
+        select REGMAP
+
+config PINCTRL_MA35D1
+	bool "MA35D1 pinctrl driver"
+	depends on ARCH_MA35D1 && OF
+	select PINCTRL_NUVOTON
+	help
+	  Say Y here to enable the MA35D1 pinctrl driver
+
 config PINCTRL_MA35
 	bool
 	depends on (ARCH_MA35 || COMPILE_TEST) && OF
