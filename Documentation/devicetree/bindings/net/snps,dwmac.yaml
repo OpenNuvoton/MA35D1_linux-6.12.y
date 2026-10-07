@@ -99,6 +99,9 @@ properties:
         - snps,dwxgmac-2.10
         - starfive,jh7100-dwmac
         - starfive,jh7110-dwmac
+        - nuvoton,ma35d1-dwmac
+        - nuvoton,ma35d0-dwmac
+        - nuvoton,ma35h0-dwmac
 
   reg:
     minItems: 1

@@ -176,7 +176,7 @@ config RESET_NPCM
 
 config RESET_MA35D1
 	bool "MA35D1 Reset Driver"
-	default ARCH_MA35D1
+	default ARCH_MA35D1 || ARCH_MA35D0 || ARCH_MA35H0
 	help
 	  This enables the reset controller driver for MA35D1
 	  Say Y if you want to control reset signals provided by SYS registers.
