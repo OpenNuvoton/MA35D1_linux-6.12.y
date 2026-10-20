@@ -418,7 +418,6 @@ int xe_vm_validate_rebind(struct xe_vm *vm, struct drm_exec *exec,
 			  unsigned int num_fences)
 {
 	struct drm_gem_object *obj;
-	unsigned long index;
 	int ret;
 
 	do {
@@ -431,7 +430,7 @@ int xe_vm_validate_rebind(struct xe_vm *vm, struct drm_exec *exec,
 			return ret;
 	} while (!list_empty(&vm->gpuvm.evict.list));
 
-	drm_exec_for_each_locked_object(exec, index, obj) {
+	drm_exec_for_each_locked_object(exec, obj) {
 		ret = dma_resv_reserve_fences(obj->resv, num_fences);
 		if (ret)
 			return ret;
@@ -1679,13 +1678,21 @@ void xe_vm_close_and_put(struct xe_vm *vm)
 		vma->gpuva.flags |= XE_VMA_DESTROYED;
 	}
 
+	xe_vm_unlock(vm);
+
 	/*
-	 * All vm operations will add shared fences to resv.
-	 * The only exception is eviction for a shared object,
-	 * but even so, the unbind when evicted would still
-	 * install a fence to resv. Hence it's safe to
-	 * destroy the pagetables immediately.
+	 * Unlink and destroy all contested external-BO VMAs before destroying
+	 * the page tables. Otherwise, concurrent eviction holding only bo->resv
+	 * can walk the BO's VMAs and attempt to invalidate/zap page tables that
+	 * have already been freed.
 	 */
+	list_for_each_entry_safe(vma, next_vma, &contested,
+				 combined_links.destroy) {
+		list_del_init(&vma->combined_links.destroy);
+		xe_vma_destroy_unlocked(vma);
+	}
+
+	xe_vm_lock(vm, false);
 	xe_vm_free_scratch(vm);
 
 	for_each_tile(tile, xe, id) {
@@ -1695,17 +1702,6 @@ void xe_vm_close_and_put(struct xe_vm *vm)
 		}
 	}
 	xe_vm_unlock(vm);
-
-	/*
-	 * VM is now dead, cannot re-add nodes to vm->vmas if it's NULL
-	 * Since we hold a refcount to the bo, we can remove and free
-	 * the members safely without locking.
-	 */
-	list_for_each_entry_safe(vma, next_vma, &contested,
-				 combined_links.destroy) {
-		list_del_init(&vma->combined_links.destroy);
-		xe_vma_destroy_unlocked(vma);
-	}
 
 	up_write(&vm->lock);
 
